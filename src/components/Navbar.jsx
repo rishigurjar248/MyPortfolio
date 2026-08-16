@@ -118,27 +118,11 @@ export default function Navbar() {
       submittedAt: new Date().toISOString(),
     };
 
-    const endpoint = import.meta.env.VITE_FEEDBACK_ENDPOINT;
+    const text = `New testimonial from ${payload.name}${
+      payload.role ? ` (${payload.role})` : ""
+    }\n\n"${payload.message}"`;
 
-    try {
-      if (endpoint) {
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-      }
-    } catch (error) {
-      console.error("Portfolio feedback submit error:", error);
-      const text = `New testimonial from ${payload.name}${
-        payload.role ? ` (${payload.role})` : ""
-      }:\n\n"${payload.message}"`;
-      window.open(buildWhatsAppLink(text), "_blank", "noopener,noreferrer");
-    }
+    window.open(buildWhatsAppLink(text), "_blank", "noopener,noreferrer");
 
     setSent(true);
     setTimeout(() => {
