@@ -4,7 +4,7 @@ const DESKTOP_RADIUS = 235;
 const MOBILE_RADIUS = 150;
 
 // Google Drive resume file
-const RESUME_FILE_ID = "13sUM7vr52MsrOtdEU4bS2mBL_NWPwyDf";
+const RESUME_FILE_ID = "1n73Xv0NDbArelBLO2q0uk8Vph6yl3hLX";
 const RESUME_DOWNLOAD_URL = `https://drive.google.com/uc?export=download&id=${RESUME_FILE_ID}`;
 
 /**
