@@ -25,15 +25,48 @@ export function Contact() {
 
     setSending(true);
 
-    const messageText = `Hello! My name is ${form.name.trim()}, email: ${form.email.trim()}\n\n${form.message.trim()}`;
-    const whatsappUrl = buildWhatsAppLink(messageText);
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+      source: "contact",
+      submittedAt: new Date().toISOString(),
+    };
 
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    const endpoint =
+      import.meta.env.VITE_CONTACT_ENDPOINT ||
+      import.meta.env.VITE_FEEDBACK_ENDPOINT;
 
-    setSending(false);
-    setSent(true);
-    setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setSent(false), 5000);
+    try {
+      if (endpoint) {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+      } else {
+        const messageText = `Hello! My name is ${payload.name}, email: ${payload.email}\n\n${payload.message}`;
+        const whatsappUrl = buildWhatsAppLink(messageText);
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      console.error("Contact form submit error:", error);
+      const fallbackText = `New message from ${payload.name} (${payload.email})\n\n"${payload.message}"`;
+      window.open(
+        buildWhatsAppLink(fallbackText),
+        "_blank",
+        "noopener,noreferrer",
+      );
+    } finally {
+      setSending(false);
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setSent(false), 5000);
+    }
   };
 
   const contactInfo = [
